@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="nameSection">
+            <input type="text" name="username" placeholder="Message Field">
+        </div>
+
+        <div class="buttonSection">
+            <button id="addUser">Add</button>
+        </div>
+        <div class="buttonSection">
+            <button id="deleteUser">Delete</button>
+        </div>
+        <div class="buttonSection">
+            <button id="updateUser">Update</button>
+        </div>
+        <div class="userList">
+            <ul id="userOrderList">
+
+            </ul>
+        </div>
+        <div class="filterSection">
+            <input type="text" name="filterValue" id="filterValue" onchange="filterList()">
+        </div>
+    </div>
+
+
+    <script>
+        const addButton = document.getElementById('addUser');
+        const deleteButton = document.getElementById('deleteUser');
+        const updateButton = document.getElementById('updateUser');
+
+        let userListStorage = JSON.parse(localStorage.getItem("userList")) || [];
+        let userNames = [];
+        let userObjectList = [];
+        var ul = document.getElementById("userOrderList");
+        let userInp = document.querySelector('input[name="username"]');
+
+        let filterListTemp = [];
+        let filterValue = "";
+
+        function cleanInput() {
+            userInp.value = "";
+        }
+
+        if (userListStorage !== null) {
+            for (let i = 0; i < userListStorage.length; i++) {
+                userObjectList.push(userListStorage[i]);
+                var li = document.createElement("li");
+                var fullName = userListStorage[i];
+                li.className = userListStorage[i];
+                li.appendChild(document.createTextNode(fullName));
+                ul.appendChild(li);
+            }
+        }
+
+        addButton.addEventListener('click', () => {
+            let userName = document.querySelector('input[name="username"]').value;
+            
+            userObjectList.push(userName);
+            localStorage.setItem('userList', JSON.stringify(userObjectList));
+
+            var li = document.createElement("li");
+            var fullName = userName;
+            li.className = userName;
+            li.appendChild(document.createTextNode(fullName));
+            ul.appendChild(li);
+
+            cleanInput();
+
+        });
+
+        deleteButton.addEventListener('click', () => {
+            let userName = document.querySelector('input[name="filterValue"]').value;
+            if (userName === "") {
+                // remove all of them
+                document.getElementById('userOrderList').innerHTML = '';
+                localStorage.clear();
+            } else {
+                let updateList = []
+                const itemsToRemove = document.querySelectorAll(`#userOrderList li`);
+                for (const item of itemsToRemove) {
+                    if (item.innerHTML.trim().toLowerCase().includes(userName.toLowerCase())) {
+                        console.log('i am here');
+                        item.remove();
+                    } else {
+                        updateList.push(item.innerHTML);
+                    }
+                }
+
+                localStorage.setItem('userList', JSON.stringify(updateList));
+            }
+            cleanInput();
+        });
+
+        updateButton.addEventListener('click', () => {
+            let userName = document.querySelector('input[name="username"]').value;
+            const itemList = document.getElementById('userOrderList').getElementsByTagName('li');
+            let updateList = []
+            for (let i = 0; i < itemList.length; i++) {
+                if(itemList[i].innerHTML.includes(filterValue)){
+                    itemList[i].innerHTML = itemList[i].textContent.replace(filterValue, userName);
+                }
+
+                updateList.push(itemList[i].innerHTML);
+
+            }
+
+            localStorage.setItem('userList', JSON.stringify(updateList));
+            cleanInput();
+
+        });
+
+        function filterList() {
+            filterListTemp = [];
+            filterValue = document.getElementById('filterValue').value.toLowerCase();
+            const itemList = document.getElementById('userOrderList').getElementsByTagName('li');
+            for (let i = 0; i < itemList.length; i++) {
+                const item = itemList[i];
+                const text = item.textContent.toLowerCase();
+                if (text.includes(filterValue)) {
+                    item.style.display = 'block'; // Show the item
+                    filterListTemp.push(itemList[i]);
+                  } else {
+                    item.style.display = 'none';  // Hide the item
+                  }
+            }
+        }
+
+        document.getElementById('filterValue').addEventListener('input', filterList);
+    </script>
+</body>
+
+</html>

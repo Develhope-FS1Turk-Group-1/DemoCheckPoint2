@@ -105,7 +105,7 @@
             let updateList = []
             for (let i = 0; i < itemList.length; i++) {
                 if(itemList[i].innerHTML.includes(filterValue)){
-                    itemList[i].innerHTML = itemList[i].textContent.replace(filterValue, userName);
+                    itemList[i].innerHTML = itemList[i].textContent.replaceAll(filterValue, userName);
                 }
 
                 updateList.push(itemList[i].innerHTML);

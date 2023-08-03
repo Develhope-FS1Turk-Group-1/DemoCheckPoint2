@@ -1,5 +1,3 @@
-//ALP ÖNCELİKLE HOŞGELDİN ABİ
-
 const nameInput = document.getElementById("name");
 const addBtn = document.getElementById("addBtn");
 const filteredTextInput = document.getElementById("filtered");

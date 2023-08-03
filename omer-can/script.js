@@ -10,19 +10,21 @@ const ol = document.createElement("ol");
 let localStorageArea = JSON.parse(localStorage.getItem("allUsers")) || [];
 
 let taskArray = [];
-let newTaskArray = [];
 tasks.append(ol);
 
 const updateFilteredTaskArray = () => {
-  const otherValue = filteredTextInput.value;
-  const otherValue1 = nameInput.value;
-  taskArray.map((task) => {
-    if (task.display == "block") {
-      let chancedName = task.name.replaceAll(otherValue, otherValue1);
-      task.name = chancedName;
-    }
-  });
-  updateProcess();
+  if (nameInput.value != "") {
+    const otherValue = filteredTextInput.value;
+    const otherValue1 = nameInput.value;
+    taskArray.map((task) => {
+      if (task.display == "block") {
+        let chancedName = task.name.replaceAll(otherValue, otherValue1);
+        task.name = chancedName;
+      }
+    });
+    updateProcess();
+    filteredTextInput.value = "";
+  }
 };
 const filteredText = () => {
   let newText = filteredTextInput.value;
@@ -66,7 +68,13 @@ const addTask = () => {
 };
 
 const deleteTask = () => {
-  taskArray = [];
+  if (filteredTextInput.value != "") {
+    taskArray = taskArray.filter((task) => task.display == "none");
+    for (let i = 0; i < taskArray.length; i++) {
+      taskArray[i].display = "block";
+    }
+  }
+  filteredTextInput.value = "";
   updateProcess();
   saveToLocalStorage();
 };
